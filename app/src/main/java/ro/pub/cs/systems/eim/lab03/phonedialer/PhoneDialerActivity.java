@@ -13,14 +13,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 public class PhoneDialerActivity extends AppCompatActivity {
+    private final static int CONTACTS_MANAGER_REQUEST_CODE = 2020;
 
     private EditText phoneNumberEditText;
     private ImageButton callImageButton;
     private ImageButton hangupImageButton;
     private ImageButton backspaceImageButton;
     private Button genericButton;
+    private ImageButton saveButton;
 
     private CallImageButtonClickListener callImageButtonClickListener = new CallImageButtonClickListener();
     private class CallImageButtonClickListener implements View.OnClickListener {
@@ -67,6 +70,25 @@ public class PhoneDialerActivity extends AppCompatActivity {
         }
     }
 
+
+    private SaveContactButtonClickListener saveContactButtonClickListener = new SaveContactButtonClickListener();
+    private class SaveContactButtonClickListener implements View.OnClickListener
+    {
+
+        @Override
+        public void onClick(View v) {
+            String phoneNumber = phoneNumberEditText.getText().toString();
+            if (phoneNumber.length() > 0) {
+                Intent intent = new Intent("ro.pub.cs.systems.eim.lab04.contactsmanager.intent.action.ContactsManagerActivity");
+                intent.putExtra("ro.pub.cs.systems.eim.lab04.contactsmanager.PHONE_NUMBER_KEY", phoneNumber);
+                startActivityForResult(intent, CONTACTS_MANAGER_REQUEST_CODE);
+            } else {
+                Toast.makeText(getApplication(), "Phone error", Toast.LENGTH_LONG).show();
+            }
+
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +118,9 @@ public class PhoneDialerActivity extends AppCompatActivity {
             genericButton = (Button)findViewById(buttonIds[index]);
             genericButton.setOnClickListener(genericButtonClickListener);
         }
+
+        saveButton = findViewById(R.id.save_image_button);
+        saveButton.setOnClickListener(saveContactButtonClickListener);
 
     }
 }
